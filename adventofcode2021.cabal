@@ -37,5 +37,5 @@ executable day01
   import:           day
   main-is:          Day01.hs
   hs-source-dirs:   challenges
-  build-depends:    containers
+  build-depends:    containers, split
 
