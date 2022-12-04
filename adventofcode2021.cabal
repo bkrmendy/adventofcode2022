@@ -51,3 +51,9 @@ executable day03
   hs-source-dirs:   challenges
   build-depends:    containers, split
 
+executable day04
+  import:           day
+  main-is:          Day04.hs
+  hs-source-dirs:   challenges
+  build-depends:    containers, split
+
