@@ -9,36 +9,40 @@ import Data.Function ((&))
 import Data.Char (isUpper)
 import Data.Bifunctor (first)
 
-type Challenge = ([[Char]], [(Int, Int, Int)])
+import qualified Data.Map.Strict as M
+
+type Stacks = M.Map Int [Char]
+type Challenge = (Stacks, [(Int, Int, Int)])
 
 move :: String -> (Int, Int, Int)
 move i = (readInt n, readInt from, readInt to)
   where [_, n, _, from, _, to] = words i 
 
-stacks :: String -> [[Char]]
-stacks = filter (not . null) . map (filter isUpper) . transpose . lines
+stacks :: String -> Stacks
+stacks = M.fromList . zip [1..] . filter (not . null) . map (filter isUpper) . transpose . lines
 
 parse :: String -> Challenge
 parse i = (stacks starting, map move $ lines script)
   where [starting, script] = splitOn "\n\n" i
-  
-popAt :: Int -> Int -> [[Char]] -> ([Char], [[Char]])
-popAt 1 p (h:rest)= let (pp, hh) = splitAt p h in (pp, hh:rest)
-popAt n p (h:rest) = let (c, hh) = popAt (n - 1) p rest in (c, h:hh)
 
-pushAt :: Int -> [Char] -> [[Char]] -> [[Char]]
-pushAt 1 c (h:rest) = (c ++ h):rest
-pushAt n c (h:rest) = h : pushAt (n - 1) c rest
+popAt :: Int -> Int -> Stacks -> ([Char], Stacks)
+popAt n p stacks = (pp, newStacks)
+  where stack = stacks M.! n
+        (pp, remaining) = splitAt p stack
+        newStacks = M.insert n remaining stacks
+
+pushAt :: Int -> [Char] -> Stacks -> Stacks
+pushAt n c stacks = M.insert n (c ++ stacks M.! n) stacks
 
 type Crane = [Char] -> [Char]
 
-step :: Crane -> (Int, Int, Int) -> [[Char]] -> [[Char]]
+step :: Crane -> (Int, Int, Int) -> Stacks -> Stacks
 step crane (n, from, to) s = popAt from n s
                            & first crane
                            & uncurry (pushAt to)
 
 run :: Crane -> Challenge -> String
-run crane = map head . uncurry (foldl' (flip (step crane)))  
+run crane = map (head . snd) . M.assocs . uncurry (foldl' (flip (step crane)))
 
 main :: IO ()
 main = challenge 05 parse (run reverse) (run id)
