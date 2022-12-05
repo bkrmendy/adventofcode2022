@@ -15,11 +15,11 @@ move :: String -> (Int, Int, Int)
 move i = (readInt n, readInt from, readInt to)
   where [_, n, _, from, _, to] = words i 
 
-sstacks :: String -> [[Char]]
-sstacks = filter (not . null) . map (filter isUpper) . transpose . lines
+stacks :: String -> [[Char]]
+stacks = filter (not . null) . map (filter isUpper) . transpose . lines
 
 parse :: String -> Challenge
-parse i = (sstacks starting, map move $ lines script)
+parse i = (stacks starting, map move $ lines script)
   where [starting, script] = splitOn "\n\n" i
   
 popAt :: Int -> Int -> [[Char]] -> ([Char], [[Char]])
@@ -37,11 +37,8 @@ step crane (n, from, to) s = popAt from n s
                            & first crane
                            & uncurry (pushAt to)
 
-result :: [[Char]] -> String
-result = map head
-
 run :: Crane -> Challenge -> String
-run crane = result . uncurry (foldl' (flip (step crane)))  
+run crane = map head . uncurry (foldl' (flip (step crane)))  
 
 main :: IO ()
 main = challenge 05 parse (run reverse) (run id)
