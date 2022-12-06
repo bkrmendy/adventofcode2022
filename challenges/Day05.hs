@@ -44,5 +44,6 @@ step crane (n, from, to) s = popAt from n s
 run :: Crane -> Challenge -> String
 run crane = map (head . snd) . M.assocs . uncurry (foldl' (flip (step crane)))
 
+-- | 55.txt is an alternative input
 main :: IO ()
 main = challenge 05 parse (run reverse) (run id)
