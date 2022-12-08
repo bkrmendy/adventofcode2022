@@ -75,3 +75,9 @@ executable day07
   hs-source-dirs:   challenges
   build-depends:    containers
 
+executable day08
+  import:           day
+  main-is:          Day08.hs
+  hs-source-dirs:   challenges
+  build-depends:    containers, array
+
