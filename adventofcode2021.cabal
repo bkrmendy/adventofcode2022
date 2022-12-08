@@ -27,6 +27,7 @@ library
     bytestring,
     cryptohash-md5,
     base16-bytestring,
+    benchpress
 
 common day
   build-depends:       adventofcode2021, base
