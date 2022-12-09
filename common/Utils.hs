@@ -212,6 +212,9 @@ sgn i
   | i > 0 = 1
   | otherwise = 0
 
+clamp :: (Int, Int) -> Int -> Int
+clamp (lower, upper) n = max lower (min n upper)
+
 -- | TRIPLE FUNCTIONS
 -- ^ (a, a, a)
 
