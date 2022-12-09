@@ -2,7 +2,7 @@ module Main where
 
 import Prelude hiding (head, tail)
 import Advent (challenge)
-import Utils (readInt, clamp)
+import Utils (readInt)
 import qualified Data.Set as S
 
 type Challenge = [(String, Int)]
@@ -22,8 +22,8 @@ moveTowards "U" (r, c) = (r + 1, c)
 
 moveBehind :: (Int, Int) -> (Int, Int) -> (Int, Int)
 moveBehind (hr, hc) (tr, tc) = (tr + dr, tc + dc)
-  where dr = clamp (-1, 1) (hr - tr)
-        dc = clamp (-1, 1) (hc - tc)    
+  where dr = signum (hr - tr)
+        dc = signum (hc - tc)
 
 cascade :: [(Int, Int)] -> String -> ([(Int, Int)], (Int, Int))
 cascade knots = go knots []
