@@ -88,3 +88,9 @@ executable day09
   hs-source-dirs:   challenges
   build-depends:    containers
 
+executable day10
+  import:           day
+  main-is:          Day10.hs
+  hs-source-dirs:   challenges
+  build-depends:    containers
+
