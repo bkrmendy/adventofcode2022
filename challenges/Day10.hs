@@ -2,7 +2,7 @@ module Main where
 
 import Advent (visual)
 import Utils (readInt)
-import Data.List (foldl')
+import Data.List.Split (chunksOf)
 import qualified Data.Map.Strict as M
 
 type Challenge = [(String, Int)]
@@ -24,20 +24,12 @@ pick is from = map (\i -> i * from M.! i) is
 part1 :: Challenge -> Int
 part1 = sum . pick [20, 60, 100, 140, 180, 220] . M.fromList . zip [1..] . run 1
 
-type Screen = M.Map (Int, Int) Bool
-
-update :: Screen -> Int -> Int -> Screen
-update screen clock x = M.insert (row, col) hit screen
-  where (row, col) = (clock - 1) `divMod` 40
-        hit = abs (x - col) < 2
-        
-        
-draw :: Screen -> String
-draw screen = unlines [[ d (screen M.! (r, c)) | c <- [0..39]] | r <- [0..5]]
-  where d p = if p then '#' else ' '
+draw :: [Int] -> String
+draw = unlines . map (zipWith (curry d) [0..]) . chunksOf 40
+  where d (c, s) = if abs (c - s) < 2 then '▊' else ' '
 
 part2 :: Challenge -> String
-part2 = draw . foldl' (\m (c, s) -> update m c s) M.empty . zip [1..] . run 1
+part2 = draw . run 1
 
 main :: IO ()
 main = visual 10 parse (show . part1) part2
