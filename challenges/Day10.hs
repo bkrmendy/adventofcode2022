@@ -29,7 +29,7 @@ type Screen = M.Map (Int, Int) Bool
 update :: Screen -> Int -> Int -> Screen
 update screen clock x = M.insert (row, col) hit screen
   where (row, col) = (clock - 1) `divMod` 40
-        hit = x - 1 == col || x == col || x + 1 == col
+        hit = abs (x - col) < 2
         
         
 draw :: Screen -> String
