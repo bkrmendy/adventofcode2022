@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-touch "./input/$1.txt"
+./tools/input.sh "$1" >> "./input/$1.txt"
 cat ./challenges/DayX.hs | sed "s/0/$1/" > "./challenges/Day$1.hs"
 git add "./input/$1.txt" "./challenges/Day$1.hs"
 

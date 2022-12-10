@@ -41,3 +41,4 @@ tags
 wiki
 wip
 .ghc.environment.*
+./tools/input.sh
