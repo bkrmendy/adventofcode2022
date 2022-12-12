@@ -100,3 +100,9 @@ executable day11
   hs-source-dirs:   challenges
   build-depends:    containers, mtl
 
+executable day12
+  import:           day
+  main-is:          Day12.hs
+  hs-source-dirs:   challenges
+  build-depends:    containers, array
+
