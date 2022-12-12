@@ -13,15 +13,14 @@ import qualified Data.Array as A
 
 type ElevationMap = A.Array (Int, Int) Char
 type Challenge = [(Int, Char)]
+type Cell = ((Int, Int), Char)
 
 height :: Char -> Int
 height 'S' = height 'a'
 height 'E' = height 'z'
 height c = ord c
 
-type NeighborsFn a = (Int, a) -> [(Int, a)]
-
-neighbors :: ElevationMap -> NeighborsFn ((Int, Int), Char)
+neighbors :: ElevationMap -> (Int, Cell) -> [(Int, Cell)]
 neighbors elevationMap (cost, ((row, col), elevation)) = do
   neighbor <- [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1)]
   guard $ A.inRange (A.bounds elevationMap) neighbor
@@ -30,8 +29,8 @@ neighbors elevationMap (cost, ((row, col), elevation)) = do
   guard $ diff < 2
   pure (cost + 1, (neighbor, cell))
 
-search :: NeighborsFn ((Int, Int), Char) -> ((Int, Int), Char) -> [(Int, Char)]
-search neighborsFn start = map (\(d, (_, c)) -> (d, c)) $ runShortestPathsFrom neighborsFn (0, start)
+search :: ElevationMap -> ((Int, Int), Char) -> [(Int, Char)]
+search elevationMap start = map (\(d, (_, c)) -> (d, c)) $ runShortestPathsFrom (neighbors elevationMap) (0, start)
 
 parseElevationMap :: String -> ElevationMap
 parseElevationMap i = A.array ((1, 1), (width, height)) $ do
@@ -43,7 +42,7 @@ parseElevationMap i = A.array ((1, 1), (width, height)) $ do
         height = length rows
 
 parse :: String -> Challenge
-parse i = search (neighbors elevationMap) start
+parse i = search elevationMap start
   where elevationMap = parseElevationMap i
         start = fromJust $ find (\(_, e) -> e == 'E') $ A.assocs elevationMap
 
