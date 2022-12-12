@@ -268,3 +268,18 @@ spfa next target start = search mempty (Set.singleton start)
                 where
                     visitedWithNode = Set.insert vertex visited
                     withNext = foldr Set.insert withoutVertex $ next (cost, vertex)
+
+runShortestPathsFrom :: (Ord cost, Ord a) => ((cost, a) -> [(cost, a)]) -> (cost, a) -> [(cost, a)]
+runShortestPathsFrom neighbors root = shortestPathsFrom neighbors (Seq.singleton root) Set.empty 
+
+shortestPathsFrom
+  :: (Ord cost, Ord a)
+  => ((cost, a) -> [(cost, a)])
+  -> Seq.Seq (cost, a)
+  -> Set.Set a
+  -> [(cost, a)]
+shortestPathsFrom neighbors queue seen = case Seq.viewl queue of
+  Seq.EmptyL -> []
+  (x Seq.:< rest) -> if Set.member (Prelude.snd x) seen
+    then shortestPathsFrom neighbors rest seen
+    else x:shortestPathsFrom neighbors (rest Seq.>< Seq.fromList (neighbors x)) (Set.insert (Prelude.snd x) seen)
