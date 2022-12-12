@@ -24,7 +24,7 @@ parse i = A.array ((1, 1), (width, height)) $ do
 height :: Char -> Int
 height 'S' = height 'a'
 height 'E' = height 'z'
-height c = ord c - ord 'a'
+height c = ord c
 
 type NeighborsFn = (Int, ((Int, Int), Char)) -> [(Int, ((Int, Int), Char))]
 
