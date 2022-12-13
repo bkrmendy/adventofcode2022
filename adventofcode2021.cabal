@@ -106,3 +106,9 @@ executable day12
   hs-source-dirs:   challenges
   build-depends:    containers, array
 
+executable day13
+  import:           day
+  main-is:          Day13.hs
+  hs-source-dirs:   challenges
+  build-depends:    containers, parsec, split
+
