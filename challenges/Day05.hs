@@ -1,6 +1,6 @@
 module Main where
 
-import Advent (challenge)
+import Advent (challenge, bench)
 import Utils (readInt)
 
 import Data.List.Split (splitOn)
@@ -9,9 +9,9 @@ import Data.Function ((&))
 import Data.Char (isUpper)
 import Data.Bifunctor (first)
 
-import qualified Data.Map.Strict as M
+import qualified Data.HashMap.Strict as M
 
-type Stacks = M.Map Int [Char]
+type Stacks = M.HashMap Int [Char]
 type Challenge = (Stacks, [(Int, Int, Int)])
 
 move :: String -> (Int, Int, Int)
@@ -42,7 +42,7 @@ step crane (n, from, to) s = popAt from n s
                            & uncurry (pushAt to)
 
 run :: Crane -> Challenge -> String
-run crane = map (head . snd) . M.assocs . uncurry (foldl' (flip (step crane)))
+run crane = map (head) . M.elems . uncurry (foldl' (flip (step crane)))
 
 -- | 55.txt is an alternative input
 main :: IO ()
