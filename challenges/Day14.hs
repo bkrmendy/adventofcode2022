@@ -3,8 +3,9 @@
 module Main where
 
 import Advent (challenge)
-import Utils (readInt, countWhere)
+import Utils (readInt, countWhere, runBFS)
 
+import Control.Monad (guard)
 import Data.List.Split (splitOn)
 import qualified Data.HashMap.Strict as M
 
@@ -40,19 +41,19 @@ stepPt1 maxR scan (c, r)
   | free scan (c + 1, r + 1) = stepPt1 maxR scan (c + 1, r + 1)
   | otherwise = Just $ M.insert (c, r) 'o' scan
 
-stepPt2 :: StepFn
-stepPt2 maxR scan (c, r)
-  | r > maxR = Just $ M.insert (c, r) 'o' scan
-  | free scan (c, r + 1) = stepPt2 maxR scan (c, r + 1)
-  | free scan (c - 1, r + 1) = stepPt2 maxR scan (c - 1, r + 1)
-  | free scan (c + 1, r + 1) = stepPt2 maxR scan (c + 1, r + 1)
-  | (c, r) == (500, 0) = Nothing
-  | otherwise = Just $ M.insert (c, r) 'o' scan
-
 pour :: StepFn -> Int -> Scan -> Scan
 pour step maxRow scan = case step maxRow scan (500, 0) of
   Nothing -> scan
   Just next -> pour step maxRow next
+
+flood :: Challenge -> Int
+flood (maxR, scan) = length $ runBFS neighbor [(500, 0)]
+  where
+    neighbor (c, r) = do
+      guard $ r <= maxR
+      cell <- [(c, r + 1), (c - 1, r + 1), (c + 1, r + 1)]
+      guard $ M.findWithDefault '.' cell scan == '.'
+      pure cell
 
 result :: Scan -> Int
 result = countWhere (== 'o') . M.elems
@@ -61,7 +62,7 @@ part1 :: Challenge -> Int
 part1 = result . (uncurry (pour stepPt1))
 
 part2 :: Challenge -> Int
-part2 = result . M.insert (500, 0) 'o' . (uncurry (pour stepPt2))
+part2 = flood
 
 main :: IO ()
 main = challenge 14 parse part1 part2
