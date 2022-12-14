@@ -2,14 +2,13 @@
 
 module Main where
 
-import Advent (challenge, visual)
+import Advent (challenge)
 import Utils (readInt, countWhere)
-import Debug.Trace
 
 import Data.List.Split (splitOn)
-import qualified Data.Map as M
+import qualified Data.HashMap.Strict as M
 
-type Scan = M.Map (Int, Int) Char
+type Scan = M.HashMap (Int, Int) Char
 type Challenge = (Int, Scan)
 
 wall :: [(Int, Int)] -> [(Int, Int)]
@@ -58,11 +57,11 @@ pour step maxRow scan = case step maxRow scan (500, 0) of
 result :: Scan -> Int
 result = countWhere (== 'o') . M.elems
 
-part1 :: Challenge -> String
-part1 = show . result . (uncurry (pour stepPt1))
+part1 :: Challenge -> Int
+part1 = result . (uncurry (pour stepPt1))
 
-part2 :: Challenge -> String
-part2 = show . result . M.insert (500, 0) 'o' . (uncurry (pour stepPt2))
+part2 :: Challenge -> Int
+part2 = result . M.insert (500, 0) 'o' . (uncurry (pour stepPt2))
 
 main :: IO ()
-main = visual 14 parse part1 part2
+main = challenge 14 parse part1 part2
