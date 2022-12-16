@@ -23,6 +23,9 @@ parse = M.fromList . map (\(v, r, vs) -> (v, (r, vs))) . parseL parseOne
 neighbors :: Challenge -> String -> [String]
 neighbors i = snd . (i M.!)
 
+rate :: Challenge -> String -> Int
+rate i = fst . (i M.!)
+
 -- | cribbed from glguy
 solve :: Int -> Challenge -> M.HashMap (S.HashSet String) Int
 solve timer i = go [(("AA", S.empty), 0)] timer
@@ -35,7 +38,7 @@ solve timer i = go [(("AA", S.empty), 0)] timer
           [((next, open), n) | next <- neighbors i here] ++
           [((here, S.insert here open), n + (t-1) * amt)
               | not $ S.member here open
-              , let amt = fst (i M.! here), amt /= 0 ]
+              , let amt = rate i here, amt /= 0 ]
 
 part1 :: Challenge -> Int
 part1 = maximum . solve 30
