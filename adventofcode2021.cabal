@@ -130,3 +130,9 @@ executable day16
   hs-source-dirs:   challenges
   build-depends:    unordered-containers >= 0.2.19, parsec, mtl
 
+executable day17
+  import:           day
+  main-is:          Day17.hs
+  hs-source-dirs:   challenges
+  build-depends:    unordered-containers >= 0.2.19
+
