@@ -54,9 +54,8 @@ path m = do
               v <- eval left
               return $ Just ((v, right, op):s)
 
-humanValue :: String -> Int -> [(Int, String, String)] -> State Challenge Int
-humanValue "humn" target _ = return target
-humanValue current target ((v, next, op):rest) = do
+humanValue :: (Int, String, String) -> (Int, String, String) -> State Challenge (Int, String, String)
+humanValue (target, current, _) (v, next, op) = do
   (monkey current) >>= \case
     E [left, _, _] -> do
       nextTarget <- return $ case op of
@@ -64,16 +63,15 @@ humanValue current target ((v, next, op):rest) = do
         "*" -> target `div` v
         "/" -> target * v
         "-" -> if left == next then target + v else v - target
-      humanValue next nextTarget rest
+      return $ (nextTarget, next, op)
 
 part1 :: Challenge -> Int
 part1 = evalState (eval "root")
 
 part2 :: Challenge -> Int
 part2 m = flip evalState m $ do
-  ((target, start), ops) <- fromJust <$> path "root" >>= \case
-    ((t, start, _):ops) -> return $ ((t, start), ops)
-  humanValue start target ops
+  p <- fromJust <$> path "root"
+  (\(r, _, _) -> r) <$> foldM humanValue (head p) (tail p)
 
 main :: IO ()
 main = challenge 21 parse part1 part2
