@@ -4,11 +4,11 @@ import Advent (challenge)
 
 import Data.List (foldl')
 import Control.Monad (guard)
-import qualified Data.Map.Strict as M
-import qualified Data.Set as S
+import qualified Data.HashMap.Strict as M
+import qualified Data.HashSet as S
 
 type Position = (Int, Int)
-type Grove = S.Set Position
+type Grove = S.HashSet Position
 type Challenge = Grove
 
 parse :: String -> Challenge
@@ -29,7 +29,7 @@ se = s . e
 sw = s . w
 
 free :: Grove -> [Position] -> Bool
-free grove ps = all (flip S.notMember grove) ps
+free grove ps = all (\p -> not $ S.member p grove) ps
 
 rotate :: [a] -> [a]
 rotate xs = tail xs ++ [head xs]
@@ -48,16 +48,16 @@ rotating xs = xs:rotating (rotate xs)
 dirs :: [[Dir]]
 dirs = rotating [nDir, sDir, wDir, eDir]
 
-propose :: [Dir] -> Grove -> M.Map Position [Position]
-propose dir grove = foldl' go M.empty (S.elems grove)
+propose :: [Dir] -> Grove -> M.HashMap Position [Position]
+propose dir grove = foldl' go M.empty (S.toList grove)
   where
     go plans pos = M.insertWith (++) next [pos] plans
       where
         stay = [pos | free grove [n pos, s pos, w pos, e pos, ne pos, nw pos, se pos, sw pos]]
         next = head $ stay ++ concat [d grove pos | d <- dir] ++ [pos]
 
-move :: Grove -> M.Map Position [Position] -> Grove
-move grove proposals = foldl' go grove (M.assocs proposals)
+move :: Grove -> M.HashMap Position [Position] -> Grove
+move grove proposals = foldl' go grove (M.toList proposals)
   where
     go next (target, [applicant]) = S.insert target $ S.delete applicant next
     go next _                     = next
@@ -68,8 +68,8 @@ step (dir:rest) grove = next : step rest next
 
 result :: Grove -> Int
 result grove = (maxCol - minCol + 1) * (maxRow - minRow + 1) - S.size grove
-  where rows = map fst $ S.elems grove
-        cols = map snd $ S.elems grove
+  where rows = map fst $ S.toList grove
+        cols = map snd $ S.toList grove
         (minRow, maxRow) = (minimum rows, maximum rows)
         (minCol, maxCol) = (minimum cols, maximum cols)
 

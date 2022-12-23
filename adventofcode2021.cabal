@@ -170,5 +170,5 @@ executable day23
   import:           day
   main-is:          Day23.hs
   hs-source-dirs:   challenges
-  build-depends:    containers
+  build-depends:    unordered-containers >= 0.2.19
 
