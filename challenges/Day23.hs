@@ -77,9 +77,6 @@ part1 :: Challenge -> String
 part1 = show . result . (!! 9) . step dirs
 
 takeUntilNoChange :: (Eq a) => [a] -> [a]
-takeUntilNoChange []                = []
-takeUntilNoChange [a]               = [a]
-takeUntilNoChange [a, b]            = [a, b]
 takeUntilNoChange (a:b:_) | a == b  = [a, b]
 takeUntilNoChange (a:b:rest)        = a : takeUntilNoChange (b:rest)
 
