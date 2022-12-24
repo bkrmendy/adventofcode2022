@@ -216,15 +216,14 @@ clamp :: (Int, Int) -> Int -> Int
 clamp (lower, upper) n = max lower (min n upper)
 
 -- | TRIPLE FUNCTIONS
--- ^ (a, a, a)
 
-fst :: (a, a, a) -> a
+fst :: (a, b, c) -> a
 fst (v, _, _) = v
 
-snd :: (a, a, a) -> a
+snd :: (a, b, c) -> b
 snd (_, v, _) = v
 
-thd :: (a, a, a) -> a
+thd :: (a, b, c) -> c
 thd (_, _, v) = v
   
 frequencies :: (Ord a) => [a] -> Map.Map a Int
