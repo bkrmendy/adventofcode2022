@@ -1,6 +1,6 @@
 module Main where
 
-import Advent (challenge)
+import Advent (challenge, visual)
 import Utils ()
 
 import Data.List (foldl')
@@ -35,7 +35,7 @@ part1 :: Challenge -> String
 part1 = ufans . sum . map snafu
 
 part2 :: Challenge -> String
-part2 = const "⭐"
+part2 = const "⭐️"
 
 main :: IO ()
-main = challenge 25 parse part1 part2
+main = visual 25 parse part1 part2
